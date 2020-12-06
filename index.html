@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./leaflet/leaflet.css">
+    <script src="./leaflet/leaflet.js"></script>
+    <!-- <script src="./script.min.js" defer></script> -->
+    <script src="./worldonly.js" defer></script>
+    <title>Map Test</title>
+    <style>
+        ::-webkit-scrollbar{
+            opacity: 0;
+            background: transparent;
+            height: 2px;
+        }
+        ::-webkit-scrollbar:hover{
+            opacity: 1;
+        }
+
+        body{
+            margin: 0;
+            overflow: hidden;
+            background-color: #444;
+
+        }
+        #map{
+            width: 100vw;
+            height: calc( 75vh - 1rem );
+            background-color: grey;
+        }
+        .bottom-bar{
+            height: 25vh;
+            position: absolute;
+            display: flex;
+            top: calc( 75vh - 1rem );
+            padding: .5rem;
+            justify-items: center;
+            
+        }
+        .collapse{
+            background-color: #666;
+            font-weight: bolder;
+            border:1px solid rgb(141, 141, 141);
+            box-shadow: none;
+        }
+        .card{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card-base{
+            display: block;
+            padding: .5rem;
+            text-align: center;
+            background-color: #444;
+            white-space: nowrap;
+        }
+        .list:hover::-webkit-scrollbar-thumb{
+            background: black;
+            border-radius: 10px;
+        }
+        .list{
+            padding-left: .5rem;
+            padding-right: .5rem;
+        }
+        #filter{
+            padding: .5rem;
+            background-color: #555;
+            font-weight: bolder;
+            border:1px solid rgb(141, 141, 141);
+        }
+        #filter>option{
+            font-weight: bolder;
+        }
+        .band{
+            padding-left: .5rem;
+            padding-right: .5rem;
+        }
+        #indicator{
+            padding-top: 1rem;
+            position: absolute;
+            text-align: center;
+            color: rgb(251, 255, 0);
+            width: 100vw;
+            z-index: 666;
+        }
+
+
+    </style>
+    <script></script>
+</head>
+<body>
+    
+    <div>
+        <div id="map" style="position: absolute;"></div>
+    </div>
+    <div class="bottom-bar">
+        <select name="" id="filter">
+            <option value="grindcore">Grindcore</option>
+            <option value="goregrind">Goregrind</option>
+            <option value="pornogrind">Pornogrind</option>
+            <option value="death grind">Deathgrind</option>
+            <option value="death metal">Death Metal</option>
+            <option value="black metal">Black Metal</option>
+            <option value="alternative metal">Alt. Metal</option>
+            <option value="doom metal">Doom Metal</option>
+            <option value="progressive metal">Prog. Metal</option>
+            <option value="hardcore">Hardcore</option>
+            <option value="post hardcore">Post Hardcore</option>
+            <option value="screamo">Screamo</option>
+            <option value="noisecore">Noisecore</option>
+            <option value="harsh noise">Harsh Noise</option>
+            <option value="harsh noise wall">Harsh Noise Wall</option>
+            <option value="technical death metal">Technical Death Metal</option>
+            <option value="trash metal">Trash Metal</option>
+            <option value="gothic metal">Gothic Metal</option>
+            <option value="symphonic black metal">Symphonic Black Metal</option>
+            <option value="stoner metal">Stoner Metal</option>
+            <option value="trashcore">Trashcore</option>
+            <option value="atmospheric black metal">Atmospheric Black Metal</option>
+            <option value="blackened death metal">Blackened Black Metal</option>
+            <option value="brutal death metal">Brutal Death Metal</option>
+            <option value="death-doom metal">Death Doom Metal</option>
+            <option value="folk metal">Folk Metal</option>
+            <option value="funk metal">Funk Metal</option>
+            <option value="glam metal">Glam Metal</option>
+            <option value="groove metal">Groove Metal</option>
+            <option value="heavy metal">Heavy Metal</option>
+            <option value="industrial metal">Industrial Metal</option>
+            <option value="melodic black metal">Melodic Black Metal</option>
+            <option value="melodic death metal">Melodic Death Metal</option>
+            <option value="melodic metalcore">Melodic Metalcore</option>
+            <option value="metalcore">Metalcore</option>
+            <option value="nu metal">Nu Metal</option>
+            <option value="old school death metal">OldSchool Death Metal</option>
+            <option value="post-metal">Post Metal</option>
+            <option value="power metal">Power Metal</option>
+            <option value="sludge metal">Sludge Metal</option>
+            <option value="speed metal">Speed Metal</option>
+            <option value="symphonic metal">Symphonic Metal</option>
+            <option value="viking metal">Viking Metal</option>
+        </select>
+    </div>
+    <b id="indicator"></b>
+</body>
+</html>
