@@ -62,7 +62,7 @@ async function init() {
                 sessionStorage.setItem('origin', origin)
                 layerSelected=this
                 ctext = feature.properties.ADMIN
-                let i = await fetch(`http://musicbrainz.org/ws/2/artist/?query=tag:${selectedGenre}%20AND%20country:${sessionStorage.getItem('origin')}&fmt=json`).then(res=>res.json())
+                let i = await fetch(`https://musicbrainz.org/ws/2/artist/?query=tag:${selectedGenre}%20AND%20country:${sessionStorage.getItem('origin')}&fmt=json`).then(res=>res.json())
                 let list = i.artists
                 await addBandlist(list)
                 this.setStyle({color:'red', fillColor:'#345'})
@@ -132,7 +132,7 @@ async function addAlbumlist(artist) {
     bar.children[1].style.display="none"
     let c = document.createElement('div') 
     c.classList.add('list')
-    let i = await fetch(`http://musicbrainz.org/ws/2/release?artist=${artist}&fmt=json`).then(res=> res.json())
+    let i = await fetch(`https://musicbrainz.org/ws/2/release?artist=${artist}&fmt=json`).then(res=> res.json())
     let albumlist = await i['releases']
     console.log(albumlist.length)
     c.style.display="flex"
