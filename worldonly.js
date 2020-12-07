@@ -1,3 +1,35 @@
+window.onresize = function(){
+    let con = bar.children
+    if (con.length==3){
+        let w1 = window.getComputedStyle(filter)["width"].replace("px", "");
+        let w2 = window.getComputedStyle(con[2].children[0])["width"].replace("px", "");
+        let w = window.innerWidth - parseInt(w1) - parseInt(w2) - 50;
+        con[2].children[1].style.width = w+"px"
+    }
+    else if (con.length==2){
+        con[1].style.width = window.innerWidth -
+        parseInt(window.getComputedStyle(filter)["width"].replace("px", "")) -
+        32 +
+        "px";
+    }
+}
+var body = document.querySelector('body')
+var fullscreen = false
+var req = function(){
+    if(fullscreen==false){
+    body.requestFullscreen()
+    fullscreen=true
+    fs.setPrefix('<b onclick="req()" style="color:#666;cursor:pointer" class="ctr leaflet-control-zoom leaflet-bar leaflet-control">✖</b>')
+
+    }
+    else{
+        document.exitFullscreen()
+        fullscreen=false
+        fs.setPrefix('<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>')
+
+    }
+}
+
 async function getGeo() {
   //target.innerHTML = `<h1 style="padding-top:${screen.height/3.5}px; text-align:center;">Please Wait...</h1>`
   target.innerHTML =
@@ -26,6 +58,8 @@ var target = document.querySelector("#map");
 var map;
 var layerSelected;
 var ctext;
+var genre
+var fs
 async function init() {
   await getGeo();
 
@@ -33,6 +67,7 @@ async function init() {
     center: [0, 0],
     zoom: 1,
     retina: true,
+    attributionControl: false
     // maxZoom: 2
   });
 
@@ -52,7 +87,29 @@ async function init() {
     }
   });
 
-  map.attributionControl.setPrefix(
+  genre = L.control.attribution({
+      position: 'bottomleft'
+  }).addTo(map)
+      
+  var atr = L.control.attribution({
+    position: 'bottomright'
+    }).addTo(map)
+
+genre.setPrefix(
+    selectedGenre.toUpperCase()
+)
+
+fs = L.control.attribution({
+    position: 'topright'
+    }).addTo(map)
+
+
+
+
+fs.setPrefix('<b onclick="req()" class="ctr leaflet-control-zoom leaflet-bar leaflet-control" style="color:#666;cursor:pointer" >⬛</b>')
+
+
+  atr.setPrefix(
     '<a href="https://leafletjs.com" target="_blank" style="color:#666;">Leaflet</a> | <a href="https://musicbrainz.org" target="_blank" style="color:#666;">Musicbrainz</a> | <a href="https://open.spotify.com/artist/5JEvywYloyf0QPHBEyBQlO" target="_blank" style="color:#666;">Fmented</a>'
   );
   bar.onmouseover = function () {
@@ -130,19 +187,20 @@ async function addBandlist(list) {
     b.onclick = async function () {
       await addAlbumlist(band.id, band.name);
     };
-    b.ondblclick = function () {
+    b.oncontextmenu = function (e) {
+    e.preventDefault()
       window.open(`https://musicbrainz.org/artist/${band.id}`, "_blank");
     };
     b.setAttribute(
       "title",
-      `Click: Check ${band.name} Releases\nDouble-Click: Find More About ${band.name}`
+      `Left Click : Check ${band.name} Releases\nRight-Click : Find More About ${band.name}`
     );
     c_con.append(b);
     container.appendChild(c_con);
     c.appendChild(container);
   });
   c.style.width =
-    screen.width -
+    window.innerWidth -
     parseInt(window.getComputedStyle(filter)["width"].replace("px", "")) -
     32 +
     "px";
@@ -207,13 +265,14 @@ async function addAlbumlist(artist, _name) {
   bar.appendChild(c);
   let w1 = window.getComputedStyle(filter)["width"].replace("px", "");
   let w2 = window.getComputedStyle(b)["width"].replace("px", "");
-  let w = screen.width - parseInt(w1) - parseInt(w2) - 50;
+  let w = window.innerWidth - parseInt(w1) - parseInt(w2) - 50;
   let h = window.getComputedStyle(filter)["height"].replace("px", "");
   if (albumlist.length == 0) {
     let a = document.createElement("div");
     a.style.display = "block";
     a.style.width = w + "px";
     a.style.textAlign = "center";
+    a.style.color = '#aaa'
     a.style.paddingTop = Math.floor(parseInt(h) / 2) + "px";
     a.innerText = "No Album Yet";
     c.appendChild(a);
@@ -268,11 +327,13 @@ var indicator = document.querySelector("#indicator");
 
 filter.onchange = async function () {
   selectedGenre = this.value;
+  genre.setPrefix(selectedGenre.toUpperCase())
   if (layerSelected != undefined) {
     layerSelected.fire("click");
     layerSelected.setStyle({ color: "gold", fillColor: "#eee" });
   }
 };
+
 
 function checkBar() {
   return bar.children.length < 2;

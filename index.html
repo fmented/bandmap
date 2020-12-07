@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./leaflet/leaflet.css" />
     <script src="./leaflet/leaflet.js"></script>
-    <script src="./script.js" defer></script>
+    <script src="./worldonly.js" defer></script>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -30,6 +30,14 @@
         overflow: hidden;
         background-color: #444;
       }
+      .ctr{
+          position: absolute;
+          top: .2rem;
+          right: .2rem;
+          font-size: 2em;
+          margin: 1rem;
+      }
+
       @font-face {
         font-family: metal;
         src: url(MetalMania-Regular.ttf);
@@ -42,8 +50,12 @@
       h2 {
         font-family: metal;
       }
+      .mf {
+        font-family: metal;
+      }
       .bottom-bar {
         height: 25vh;
+        width: 100vw;
         position: absolute;
         display: flex;
         top: calc(75vh - 1rem);
@@ -55,6 +67,7 @@
         font-weight: bolder;
         border: 1px solid rgb(141, 141, 141);
         box-shadow: none;
+        border-radius: 10px;
       }
       .card {
         display: flex;
@@ -85,6 +98,7 @@
         border: 1px solid rgb(141, 141, 141);
         width: 10vw;
         font-family: metal;
+        border-radius: 10px;
       }
       #filter > option {
         font-weight: bolder;
