@@ -115,9 +115,9 @@ async function init() {
         layerSelected = this;
         ctext = feature.properties.ADMIN;
         let i = await fetch(
-          `https://musicbrainz.org/ws/2/artist/?query=tag:${selectedGenre}%20AND%20country:${sessionStorage.getItem(
+          `https://musicbrainz.org/ws/2/artist/?query=genre:${selectedGenre}%20AND%20country:${sessionStorage.getItem(
             "origin"
-          )}&inc=url-rels&fmt=json`
+          )}&fmt=json`
         ).then((res) => {
           if (res.status == 200) {
             return res.json();
