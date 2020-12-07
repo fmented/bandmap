@@ -1,147 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./leaflet/leaflet.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./leaflet/leaflet.css" />
     <script src="./leaflet/leaflet.js"></script>
-    <!-- <script src="./script.min.js" defer></script> -->
-    <script src="./worldonly.js" defer></script>
-    <title>Map Test</title>
+    <script src="./script.js" defer></script>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#666666" />
+    <meta name="msapplication-TileColor" content="#444444" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Band Map</title>
     <style>
-        ::-webkit-scrollbar{
-            opacity: 0;
-            background: transparent;
-            height: 2px;
-        }
-        ::-webkit-scrollbar:hover{
-            opacity: 1;
-        }
+      ::-webkit-scrollbar {
+        opacity: 0;
+        background: transparent;
+        height: 2px;
+      }
+      ::-webkit-scrollbar:hover {
+        opacity: 1;
+      }
 
-        body{
-            margin: 0;
-            overflow: hidden;
-            background-color: #444;
-
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #444;
+      }
+      @font-face {
+        font-family: metal;
+        src: url(MetalMania-Regular.ttf);
+      }
+      #map {
+        width: 100vw;
+        height: calc(75vh - 1rem);
+        background-color: grey;
+      }
+      h2 {
+        font-family: metal;
+      }
+      .bottom-bar {
+        height: 25vh;
+        position: absolute;
+        display: flex;
+        top: calc(75vh - 1rem);
+        padding: 0.5rem;
+        justify-items: center;
+      }
+      .collapse {
+        background-color: #666;
+        font-weight: bolder;
+        border: 1px solid rgb(141, 141, 141);
+        box-shadow: none;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .card-base {
+        display: block;
+        padding: 0.5rem;
+        text-align: center;
+        background-color: #444;
+        white-space: nowrap;
+      }
+      .list:hover::-webkit-scrollbar-thumb {
+        background: black;
+        border-radius: 10px;
+      }
+      .list {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      #filter {
+        display: block;
+        text-align-last: center;
+        padding: 0.5rem;
+        background-color: #555;
+        font-weight: bolder;
+        border: 1px solid rgb(141, 141, 141);
+        width: 10vw;
+        font-family: metal;
+      }
+      #filter > option {
+        font-weight: bolder;
+        font-family: metal;
+      }
+      .band {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      #indicator {
+        padding-top: 1rem;
+        position: absolute;
+        text-align: center;
+        color: rgb(251, 255, 0);
+        width: 100vw;
+        z-index: 666;
+        font-family: metal;
+        letter-spacing: 3px;
+      }
+      .lds-ring {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+        padding-left: calc(50vw - 40px);
+        padding-top: calc(50vh - 120px);
+      }
+      .lds-ring div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        border: 8px solid #fff;
+        border-radius: 50%;
+        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: #222 transparent transparent transparent;
+      }
+      .lds-ring div:nth-child(1) {
+        animation-delay: -0.45s;
+      }
+      .lds-ring div:nth-child(2) {
+        animation-delay: -0.3s;
+      }
+      .lds-ring div:nth-child(3) {
+        animation-delay: -0.15s;
+      }
+      @keyframes lds-ring {
+        0% {
+          transform: rotate(0deg);
         }
-        #map{
-            width: 100vw;
-            height: calc( 75vh - 1rem );
-            background-color: grey;
+        100% {
+          transform: rotate(360deg);
         }
-        .bottom-bar{
-            height: 25vh;
-            position: absolute;
-            display: flex;
-            top: calc( 75vh - 1rem );
-            padding: .5rem;
-            justify-items: center;
-            
-        }
-        .collapse{
-            background-color: #666;
-            font-weight: bolder;
-            border:1px solid rgb(141, 141, 141);
-            box-shadow: none;
-        }
-        .card{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .card-base{
-            display: block;
-            padding: .5rem;
-            text-align: center;
-            background-color: #444;
-            white-space: nowrap;
-        }
-        .list:hover::-webkit-scrollbar-thumb{
-            background: black;
-            border-radius: 10px;
-        }
-        .list{
-            padding-left: .5rem;
-            padding-right: .5rem;
-        }
-        #filter{
-            padding: .5rem;
-            background-color: #555;
-            font-weight: bolder;
-            border:1px solid rgb(141, 141, 141);
-        }
-        #filter>option{
-            font-weight: bolder;
-        }
-        .band{
-            padding-left: .5rem;
-            padding-right: .5rem;
-        }
-        #indicator{
-            padding-top: 1rem;
-            position: absolute;
-            text-align: center;
-            color: rgb(251, 255, 0);
-            width: 100vw;
-            z-index: 666;
-        }
-
-
+      }
     </style>
     <script></script>
-</head>
-<body>
-    
+  </head>
+  <body>
     <div>
-        <div id="map" style="position: absolute;"></div>
+      <div id="map" style="position: absolute"></div>
     </div>
     <div class="bottom-bar">
-        <select name="" id="filter">
-            <option value="grindcore">Grindcore</option>
-            <option value="goregrind">Goregrind</option>
-            <option value="pornogrind">Pornogrind</option>
-            <option value="death grind">Deathgrind</option>
-            <option value="death metal">Death Metal</option>
-            <option value="black metal">Black Metal</option>
-            <option value="alternative metal">Alt. Metal</option>
-            <option value="doom metal">Doom Metal</option>
-            <option value="progressive metal">Prog. Metal</option>
-            <option value="hardcore">Hardcore</option>
-            <option value="post hardcore">Post Hardcore</option>
-            <option value="screamo">Screamo</option>
-            <option value="noisecore">Noisecore</option>
-            <option value="harsh noise">Harsh Noise</option>
-            <option value="harsh noise wall">Harsh Noise Wall</option>
-            <option value="technical death metal">Technical Death Metal</option>
-            <option value="trash metal">Trash Metal</option>
-            <option value="gothic metal">Gothic Metal</option>
-            <option value="symphonic black metal">Symphonic Black Metal</option>
-            <option value="stoner metal">Stoner Metal</option>
-            <option value="trashcore">Trashcore</option>
-            <option value="atmospheric black metal">Atmospheric Black Metal</option>
-            <option value="blackened death metal">Blackened Black Metal</option>
-            <option value="brutal death metal">Brutal Death Metal</option>
-            <option value="death-doom metal">Death Doom Metal</option>
-            <option value="folk metal">Folk Metal</option>
-            <option value="funk metal">Funk Metal</option>
-            <option value="glam metal">Glam Metal</option>
-            <option value="groove metal">Groove Metal</option>
-            <option value="heavy metal">Heavy Metal</option>
-            <option value="industrial metal">Industrial Metal</option>
-            <option value="melodic black metal">Melodic Black Metal</option>
-            <option value="melodic death metal">Melodic Death Metal</option>
-            <option value="melodic metalcore">Melodic Metalcore</option>
-            <option value="metalcore">Metalcore</option>
-            <option value="nu metal">Nu Metal</option>
-            <option value="old school death metal">OldSchool Death Metal</option>
-            <option value="post-metal">Post Metal</option>
-            <option value="power metal">Power Metal</option>
-            <option value="sludge metal">Sludge Metal</option>
-            <option value="speed metal">Speed Metal</option>
-            <option value="symphonic metal">Symphonic Metal</option>
-            <option value="viking metal">Viking Metal</option>
-        </select>
+      <select name="" id="filter" title="Select Genre">
+        <option value="grindcore">Grindcore</option>
+        <option value="goregrind">Goregrind</option>
+        <option value="pornogrind">Pornogrind</option>
+        <option value="death grind">Deathgrind</option>
+        <option value="death metal">Death Metal</option>
+        <option value="black metal">Black Metal</option>
+        <option value="alternative metal">Alt. Metal</option>
+        <option value="doom metal">Doom Metal</option>
+        <option value="progressive metal">Prog. Metal</option>
+        <option value="hardcore">Hardcore</option>
+        <option value="post hardcore">Post Hardcore</option>
+        <option value="screamo">Screamo</option>
+        <option value="noisecore">Noisecore</option>
+        <option value="harsh noise">Harsh Noise</option>
+        <option value="harsh noise wall">Harsh Noise Wall</option>
+        <option value="technical death metal">Technical Death Metal</option>
+        <option value="trash metal">Trash Metal</option>
+        <option value="gothic metal">Gothic Metal</option>
+        <option value="symphonic black metal">Symphonic Black Metal</option>
+        <option value="stoner metal">Stoner Metal</option>
+        <option value="trashcore">Trashcore</option>
+        <option value="atmospheric black metal">Atmospheric Black Metal</option>
+        <option value="blackened death metal">Blackened Black Metal</option>
+        <option value="brutal death metal">Brutal Death Metal</option>
+        <option value="death-doom metal">Death Doom Metal</option>
+        <option value="folk metal">Folk Metal</option>
+        <option value="funk metal">Funk Metal</option>
+        <option value="glam metal">Glam Metal</option>
+        <option value="groove metal">Groove Metal</option>
+        <option value="heavy metal">Heavy Metal</option>
+        <option value="industrial metal">Industrial Metal</option>
+        <option value="melodic black metal">Melodic Black Metal</option>
+        <option value="melodic death metal">Melodic Death Metal</option>
+        <option value="melodic metalcore">Melodic Metalcore</option>
+        <option value="metalcore">Metalcore</option>
+        <option value="nu metal">Nu Metal</option>
+        <option value="old school death metal">OldSchool Death Metal</option>
+        <option value="post-metal">Post Metal</option>
+        <option value="power metal">Power Metal</option>
+        <option value="sludge metal">Sludge Metal</option>
+        <option value="speed metal">Speed Metal</option>
+        <option value="symphonic metal">Symphonic Metal</option>
+        <option value="viking metal">Viking Metal</option>
+      </select>
     </div>
     <b id="indicator"></b>
-</body>
+  </body>
 </html>
