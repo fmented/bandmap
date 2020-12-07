@@ -189,6 +189,9 @@ async function addBandlist(list) {
     };
     b.oncontextmenu = function (e) {
     e.preventDefault()
+    document.exitFullscreen()
+    fullscreen=false
+    fs.setPrefix('<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>')
       window.open(`https://musicbrainz.org/artist/${band.id}`, "_blank");
     };
     b.setAttribute(
@@ -297,6 +300,9 @@ async function addAlbumlist(artist, _name) {
       a.style.cursor = "pointer";
       a.setAttribute("title", "More Information");
       a.onclick = function () {
+        document.exitFullscreen()
+        fullscreen=false
+        fs.setPrefix('<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>')
         window.open(`https://musicbrainz.org/release/${src[1]}`, "_blank");
       };
       card.appendChild(a);
@@ -306,6 +312,9 @@ async function addAlbumlist(artist, _name) {
       name.style.cursor = "pointer";
       name.setAttribute("title", "Search on Spotify");
       name.onclick = function () {
+        document.exitFullscreen()
+        fullscreen=false
+        fs.setPrefix('<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>')
         window.open(
           `https://open.spotify.com/search/${_name} ${_album.title}`,
           "_blank"
