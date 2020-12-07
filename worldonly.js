@@ -16,7 +16,7 @@ var req = function () {
     body.requestFullscreen();
     fullscreen = true;
     fs.setPrefix(
-      '<b onclick="req()" style="color:#666;cursor:pointer" class="ctr leaflet-control-zoom leaflet-bar leaflet-control">✖</b>'
+      '<b onclick="req()" style="color:#666;cursor:pointer" class="ctr leaflet-control-zoom leaflet-bar leaflet-control">-✖-</b>'
     );
   } else {
     document.exitFullscreen();
