@@ -1,37 +1,33 @@
-window.onresize = function(){
-    let con = bar.children
-    if (con.length==3){
-        let w1 = window.getComputedStyle(filter)["width"].replace("px", "");
-        let w2 = window.getComputedStyle(con[2].children[0])["width"].replace("px", "");
-        let w = window.innerWidth - parseInt(w1) - parseInt(w2) - 50;
-        con[2].children[1].style.width = w+"px"
-    }
-    else if (con.length==2){
-        con[1].style.width = window.innerWidth -
-        parseInt(window.getComputedStyle(filter)["width"].replace("px", "")) -
-        32 +
-        "px";
-    }
-}
-var body = document.querySelector('body')
-var fullscreen = false
-var req = function(){
-    if(fullscreen==false){
-    body.requestFullscreen()
-    fullscreen=true
-    fs.setPrefix('<b onclick="req()" style="color:#666;cursor:pointer" class="ctr leaflet-control-zoom leaflet-bar leaflet-control">✖</b>')
+var body = document.querySelector("body");
+var bar = document.querySelector(".bottom-bar");
+var filter = document.querySelector("#filter");
+var target = document.querySelector("#map");
+var indicator = document.querySelector("#indicator");
+var fullscreen = false;
+var selectedGenre = filter.value;
+var map;
+var layerSelected;
+var ctext;
+var genre;
+var fs;
 
-    }
-    else{
-        document.exitFullscreen()
-        fullscreen=false
-        fs.setPrefix('<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>')
-
-    }
-}
+var req = function () {
+  if (fullscreen == false) {
+    body.requestFullscreen();
+    fullscreen = true;
+    fs.setPrefix(
+      '<b onclick="req()" style="color:#666;cursor:pointer" class="ctr leaflet-control-zoom leaflet-bar leaflet-control">✖</b>'
+    );
+  } else {
+    document.exitFullscreen();
+    fullscreen = false;
+    fs.setPrefix(
+      '<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>'
+    );
+  }
+};
 
 async function getGeo() {
-  //target.innerHTML = `<h1 style="padding-top:${screen.height/3.5}px; text-align:center;">Please Wait...</h1>`
   target.innerHTML =
     '<div class="lds-ring"><div></div><div></div><div></div></div>';
   var geo = await fetch("./countries.geojson", {
@@ -47,19 +43,12 @@ var styles = {
   color: "#ee1122",
   fillColor: "#222222",
   fillOpacity: 1,
-  weight: 0.5,
 };
 
 function randomColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 }
 
-var target = document.querySelector("#map");
-var map;
-var layerSelected;
-var ctext;
-var genre
-var fs
 async function init() {
   await getGeo();
 
@@ -67,12 +56,8 @@ async function init() {
     center: [0, 0],
     zoom: 1,
     retina: true,
-    attributionControl: false
-    // maxZoom: 2
+    attributionControl: false,
   });
-
-  // map.doubleClickZoom.disable()
-  // map.scrollWheelZoom.disable()
 
   map.on("mousedown", function () {
     if (sessionStorage.getItem("genre") == selectedGenre) {
@@ -87,31 +72,34 @@ async function init() {
     }
   });
 
-  genre = L.control.attribution({
-      position: 'bottomleft'
-  }).addTo(map)
-      
-  var atr = L.control.attribution({
-    position: 'bottomright'
-    }).addTo(map)
+  genre = L.control
+    .attribution({
+      position: "bottomleft",
+    })
+    .addTo(map);
 
-genre.setPrefix(
-    selectedGenre.toUpperCase()
-)
+  var atr = L.control
+    .attribution({
+      position: "bottomright",
+    })
+    .addTo(map);
 
-fs = L.control.attribution({
-    position: 'topright'
-    }).addTo(map)
+  genre.setPrefix(selectedGenre.toUpperCase());
 
+  fs = L.control
+    .attribution({
+      position: "topright",
+    })
+    .addTo(map);
 
-
-
-fs.setPrefix('<b onclick="req()" class="ctr leaflet-control-zoom leaflet-bar leaflet-control" style="color:#666;cursor:pointer" >⬛</b>')
-
+  fs.setPrefix(
+    '<b onclick="req()" class="ctr leaflet-control-zoom leaflet-bar leaflet-control" style="color:#666;cursor:pointer" >⬛</b>'
+  );
 
   atr.setPrefix(
     '<a href="https://leafletjs.com" target="_blank" style="color:#666;">Leaflet</a> | <a href="https://musicbrainz.org" target="_blank" style="color:#666;">Musicbrainz</a> | <a href="https://open.spotify.com/artist/5JEvywYloyf0QPHBEyBQlO" target="_blank" style="color:#666;">Fmented</a>'
   );
+
   bar.onmouseover = function () {
     selected = false;
   };
@@ -135,10 +123,12 @@ fs.setPrefix('<b onclick="req()" class="ctr leaflet-control-zoom leaflet-bar lea
             return res.json();
           }
         });
+        this.bringToFront();
         let list = i.artists;
         await addBandlist(list);
-        this.setStyle({ color: "gold", fillColor: "#eee" });
+        this.setStyle({ color: "#bbb", fillColor: "#666" });
         indicator.innerText = feature.properties.ADMIN;
+        selected = false;
       });
       layer.on("mouseup", function (e) {
         w.setStyle(styles);
@@ -155,7 +145,7 @@ fs.setPrefix('<b onclick="req()" class="ctr leaflet-control-zoom leaflet-bar lea
           w.setStyle(styles);
         }
         if (layerSelected != undefined) {
-          layerSelected.setStyle({ color: "gold", fillColor: "#eee" });
+          layerSelected.setStyle({ color: "#bbb", fillColor: "#666" });
           indicator.innerText = ctext;
         }
       });
@@ -188,10 +178,12 @@ async function addBandlist(list) {
       await addAlbumlist(band.id, band.name);
     };
     b.oncontextmenu = function (e) {
-    e.preventDefault()
-    document.exitFullscreen()
-    fullscreen=false
-    fs.setPrefix('<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>')
+      e.preventDefault();
+      document.exitFullscreen();
+      fullscreen = false;
+      fs.setPrefix(
+        '<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>'
+      );
       window.open(`https://musicbrainz.org/artist/${band.id}`, "_blank");
     };
     b.setAttribute(
@@ -275,7 +267,7 @@ async function addAlbumlist(artist, _name) {
     a.style.display = "block";
     a.style.width = w + "px";
     a.style.textAlign = "center";
-    a.style.color = '#aaa'
+    a.style.color = "#ccc";
     a.style.paddingTop = Math.floor(parseInt(h) / 2) + "px";
     a.innerText = "No Album Yet";
     c.appendChild(a);
@@ -300,9 +292,11 @@ async function addAlbumlist(artist, _name) {
       a.style.cursor = "pointer";
       a.setAttribute("title", "More Information");
       a.onclick = function () {
-        document.exitFullscreen()
-        fullscreen=false
-        fs.setPrefix('<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>')
+        document.exitFullscreen();
+        fullscreen = false;
+        fs.setPrefix(
+          '<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>'
+        );
         window.open(`https://musicbrainz.org/release/${src[1]}`, "_blank");
       };
       card.appendChild(a);
@@ -312,9 +306,11 @@ async function addAlbumlist(artist, _name) {
       name.style.cursor = "pointer";
       name.setAttribute("title", "Search on Spotify");
       name.onclick = function () {
-        document.exitFullscreen()
-        fullscreen=false
-        fs.setPrefix('<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>')
+        document.exitFullscreen();
+        fullscreen = false;
+        fs.setPrefix(
+          '<b onclick="req()" class="leaflet-control-zoom leaflet-bar leaflet-control ctr" style="color:#666;cursor:pointer">⬛</b>'
+        );
         window.open(
           `https://open.spotify.com/search/${_name} ${_album.title}`,
           "_blank"
@@ -328,22 +324,35 @@ async function addAlbumlist(artist, _name) {
   }
 }
 
-init();
-var bar = document.querySelector(".bottom-bar");
-var filter = document.querySelector("#filter");
-var selectedGenre = filter.value;
-var indicator = document.querySelector("#indicator");
-
-filter.onchange = async function () {
-  selectedGenre = this.value;
-  genre.setPrefix(selectedGenre.toUpperCase())
-  if (layerSelected != undefined) {
-    layerSelected.fire("click");
-    layerSelected.setStyle({ color: "gold", fillColor: "#eee" });
-  }
-};
-
-
 function checkBar() {
   return bar.children.length < 2;
 }
+
+filter.onchange = async function () {
+  selectedGenre = this.value;
+  genre.setPrefix(selectedGenre.toUpperCase());
+  if (layerSelected != undefined) {
+    layerSelected.fire("click");
+    layerSelected.setStyle({ color: "#bbb", fillColor: "#666" });
+  }
+};
+
+window.onresize = function () {
+  let con = bar.children;
+  if (con.length == 3) {
+    let w1 = window.getComputedStyle(filter)["width"].replace("px", "");
+    let w2 = window
+      .getComputedStyle(con[2].children[0])
+      ["width"].replace("px", "");
+    let w = window.innerWidth - parseInt(w1) - parseInt(w2) - 50;
+    con[2].children[1].style.width = w + "px";
+  } else if (con.length == 2) {
+    con[1].style.width =
+      window.innerWidth -
+      parseInt(window.getComputedStyle(filter)["width"].replace("px", "")) -
+      32 +
+      "px";
+  }
+};
+
+init();
